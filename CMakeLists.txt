@@ -40,13 +40,13 @@ target_link_libraries (TestyFigur ${Boost_LIBRARIES})
 target_link_libraries (TestyPlanszy ${Boost_LIBRARIES})
 
 
-set(Qt6_DIR "C:/Qt/6.6.2/msvc2019_64/lib/cmake/Qt6")
-find_package(Qt6 REQUIRED COMPONENTS Core )
-qt_standard_project_setup()
-qt_add_executable(UI
-        ui_app/main.cpp
-        ui_app/hello.qml
-)
+#set(Qt6_DIR "C:/Qt/6.6.2/msvc2019_64/lib/cmake/Qt6")
+#find_package(Qt6 REQUIRED COMPONENTS Core )
+#qt_standard_project_setup()
+#qt_add_executable(UI
+#        ui_app/main.cpp
+#        ui_app/hello.qml
+#)
 
 #target_link_libraries(helloworld PRIVATE Widgets)
 #

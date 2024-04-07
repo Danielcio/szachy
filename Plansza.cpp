@@ -9,6 +9,8 @@
 #include <iostream>
 #include <typeinfo>
 
+using namespace std;
+
 void Plansza::wygenerujMape() {
     for(int x = 0; x < 8; x++) {
         for(int y = 0; y < 8; y++) {
@@ -59,6 +61,10 @@ bool Plansza::przesunFigure(int staryX, int staryY, int nowyX, int nowyY) {
         return false;
     }
 
+    if(mapa[staryX][staryY] == nullptr) {
+        return false;
+    }
+
     if(mapa[nowyX][nowyY] == nullptr && mapa[staryX][staryY] -> sprawdzRuch(staryX, staryY, nowyX, nowyY, mapa)) {
         if(!zmienPozycje(staryX, staryY, nowyX, nowyY))
             return false;
@@ -81,35 +87,37 @@ bool Plansza::zmienPozycje(int staryX, int staryY, int nowyX, int nowyY) {
     mapa[nowyX][nowyY] = mapa[staryX][staryY];
     mapa[staryX][staryY] = nullptr;
 
+    const std::type_info& type = typeid(*mapa[nowyX][nowyY]);
+    if (type == typeid(Krol))
+        zaktualizujKrola(mapa[nowyX][nowyY]-> kolor, nowyX, nowyY);
+
     if(czySzach(mapa[nowyX][nowyY]->kolor)) {
         mapa[staryX][staryY] = mapa[nowyX][nowyY];
         mapa[nowyX][nowyY] = figura;
+        if (type == typeid(Krol))
+            zaktualizujKrola(mapa[staryX][staryY]-> kolor, staryX, staryY);
+
         return false;
     }
 
     // Jesli figura jest krolem, to sprawdz jej kolor i zaktualizuj odpowiednia parę współrzędnych
-    const std::type_info& type = typeid(*mapa[nowyX][nowyY]);
-
-    if (type == typeid(Krol)) {
-        if(mapa[nowyX][nowyY]->kolor == Bialy) {
-            bialyKrol = std::make_pair(nowyX, nowyY);
-        }
-        else {
-            czarnyKrol = std::make_pair(nowyX, nowyY);
-        }
-    }
 
     return true;
+}
+
+void Plansza::zaktualizujKrola(Kolor kolor, int x, int y) {
+    if(kolor == Bialy) {
+        bialyKrol = std::make_pair(x, y);
+    }
+    else {
+        czarnyKrol = std::make_pair(x, y);
+    }
 }
 
 
 bool Plansza::czySzach(Kolor kolorKrola) {
     std::pair<int, int> wspolrzedne;
     Kolor kolorFigury = przeciwnyKolor(kolorKrola);
-    if(kolorKrola == Bialy)
-        kolorFigury = Czarny;
-    else
-        kolorFigury = Bialy;
 
     if (kolorKrola == Bialy) {
         wspolrzedne = bialyKrol;
@@ -122,7 +130,8 @@ bool Plansza::czySzach(Kolor kolorKrola) {
      //Jesli kolor jest przeciwny do koloru krola, to sprawdzamy czy figura ma na niego bicie
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
-            if(mapa[x][y]->kolor == kolorFigury && mapa[x][y]->sprawdzBicie(x,y,wspolrzedne.first, wspolrzedne.second, mapa)) {
+            if(mapa[x][y] != nullptr && mapa[x][y]->kolor == kolorFigury && mapa[x][y]->sprawdzBicie(x,y,wspolrzedne.first, wspolrzedne.second, mapa)) {
+                cout << "Znaleziono szach, figura " <<x << ", " << y << " ma bicie na krola na " << wspolrzedne.first << ", " << wspolrzedne.second<<endl;
                return true;
             }
         }
@@ -132,6 +141,12 @@ bool Plansza::czySzach(Kolor kolorKrola) {
 }
 Plansza::Plansza() {
     wygenerujMape();
+}
 
-   // std::cout << "Plansza()" << std::endl;
+Plansza::Plansza(Figura* mapa[8][8]) {
+    for(int x = 0; x < 8; x++) {
+        for(int y = 0; y < 8; y++) {
+            this->mapa[x][y] = mapa[x][y];
+        }
+    }
 }

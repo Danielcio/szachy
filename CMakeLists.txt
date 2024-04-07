@@ -30,15 +30,18 @@ find_package (Boost REQUIRED COMPONENTS)
 include_directories (${Boost_INCLUDE_DIRS})
 
 add_executable (TestyFigur tests/test_figura.cpp Pionek.h Pionek.cpp Kolor.h Kolor.cpp Figura.h Figura.cpp Wieza.h Wieza.cpp
-Goniec.h Goniec.cpp Skoczek.h Skoczek.cpp Krol.h Krol.cpp Hetman.h Hetman.cpp Plansza.h Plansza.cpp)
+Goniec.h Goniec.cpp Skoczek.h Skoczek.cpp Krol.h Krol.cpp Hetman.h Hetman.cpp Plansza.h Plansza.cpp )
 
 
 add_executable(TestyPlanszy tests/test_plansza.cpp Pionek.h Pionek.cpp Kolor.h Kolor.cpp Figura.h Figura.cpp Wieza.h Wieza.cpp
 Goniec.h Goniec.cpp Skoczek.h Skoczek.cpp Krol.h Krol.cpp Hetman.h Hetman.cpp Plansza.h Plansza.cpp )
 
+add_executable(TestySzach tests/test_szach.cpp Pionek.h Pionek.cpp Kolor.h Kolor.cpp Figura.h Figura.cpp Wieza.h Wieza.cpp
+        Goniec.h Goniec.cpp Skoczek.h Skoczek.cpp Krol.h Krol.cpp Hetman.h Hetman.cpp Plansza.h Plansza.cpp )
+
 target_link_libraries (TestyFigur ${Boost_LIBRARIES})
 target_link_libraries (TestyPlanszy ${Boost_LIBRARIES})
-
+target_link_libraries (TestySzach ${Boost_LIBRARIES})
 
 #set(Qt6_DIR "C:/Qt/6.6.2/msvc2019_64/lib/cmake/Qt6")
 #find_package(Qt6 REQUIRED COMPONENTS Core )

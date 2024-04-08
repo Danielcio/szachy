@@ -74,14 +74,14 @@ if(poprzednikolor==mapa[staryX][staryY]->kolor){
             return false;
 
     }
-    else if(mapa[staryX][staryY] -> kolor != mapa[nowyX][nowyY] -> kolor && mapa[staryX][staryY] -> sprawdzBicie(staryX, staryY, nowyX, nowyY, mapa)) {
+    else if(mapa[nowyX][nowyY]!= nullptr && mapa[staryX][staryY] -> kolor != mapa[nowyX][nowyY] -> kolor && mapa[staryX][staryY] -> sprawdzBicie(staryX, staryY, nowyX, nowyY, mapa)) {
         if(!zmienPozycje(staryX, staryY, nowyX, nowyY))
             return false;
 
         zbiteFigury.push_back(mapa[nowyX][nowyY]);
 
     }
-poprzednikolor= przeciwnyKolor(poprzednikolor)
+poprzednikolor= przeciwnyKolor(poprzednikolor);
     return true;
 }
 

@@ -11,6 +11,7 @@ private:
     void zaktualizujKrola(Kolor kolor, int x, int y);
     bool zmienPozycje(int staryX, int staryY, int nowyX, int nowyY);
     Figura* mapa[8][8]{};
+    Kolor poprzednikolor=Czarny;
 public:
     std::pair<int, int> bialyKrol;
     std::pair<int, int> czarnyKrol;

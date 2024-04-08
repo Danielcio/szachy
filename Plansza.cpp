@@ -64,21 +64,24 @@ bool Plansza::przesunFigure(int staryX, int staryY, int nowyX, int nowyY) {
     if(mapa[staryX][staryY] == nullptr) {
         return false;
     }
+if(poprzednikolor==mapa[staryX][staryY]->kolor){
+    return false;
+}
+
 
     if(mapa[nowyX][nowyY] == nullptr && mapa[staryX][staryY] -> sprawdzRuch(staryX, staryY, nowyX, nowyY, mapa)) {
         if(!zmienPozycje(staryX, staryY, nowyX, nowyY))
             return false;
 
-        return true;
     }
     else if(mapa[staryX][staryY] -> kolor != mapa[nowyX][nowyY] -> kolor && mapa[staryX][staryY] -> sprawdzBicie(staryX, staryY, nowyX, nowyY, mapa)) {
         if(!zmienPozycje(staryX, staryY, nowyX, nowyY))
             return false;
 
         zbiteFigury.push_back(mapa[nowyX][nowyY]);
-        return true;
-    }
 
+    }
+poprzednikolor= przeciwnyKolor(poprzednikolor)
     return true;
 }
 

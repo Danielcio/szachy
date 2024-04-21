@@ -2,10 +2,22 @@
 
 bool Pionek::sprawdzRuch(int staryX, int staryY, int nowyX, int nowyY, Figura* mapa[][8]) {
     if(staryX == nowyX) {
-        if (kolor == Bialy && staryY + 1 == nowyY) {
-            return true;
-        } else if (kolor == Czarny && staryY - 1 == nowyY) {
-            return true;
+
+        if (kolor == Bialy) {
+           if(staryY + 1 == nowyY) {
+                return true;
+           }
+           if(staryY == 1 && staryY + 2 == nowyY) {
+           return true;
+           }
+        }
+        else if (kolor == Czarny) {
+            if(staryY - 1 == nowyY) {
+                return true;
+            }
+            if(staryY == 6 && staryY - 2 == nowyY) {
+                return true;
+            }
         }
     }
 

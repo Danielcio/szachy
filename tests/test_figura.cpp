@@ -39,6 +39,7 @@ BOOST_FIXTURE_TEST_SUITE(testyFigur, P)
 
         delete mapa[1][1];
         mapa[1][6] = new Pionek(Czarny);
+        mapa[3][6] = new Pionek(Czarny);
 
         BOOST_CHECK(mapa[1][6]->sprawdzRuch(1, 6, 1, 5, mapa));
 
@@ -47,6 +48,7 @@ BOOST_FIXTURE_TEST_SUITE(testyFigur, P)
         BOOST_CHECK(!mapa[1][6]->sprawdzRuch(1, 6, 2, 6, mapa));
         BOOST_CHECK(!mapa[1][6]->sprawdzRuch(1, 6, 0, 7, mapa));
         BOOST_CHECK(!mapa[1][6]->sprawdzRuch(1, 1, 1, 7, mapa));
+        BOOST_CHECK(!mapa[3][6]->sprawdzRuch(3, 6, 3, 3, mapa));
     }
 
     BOOST_AUTO_TEST_CASE(biciePionka)

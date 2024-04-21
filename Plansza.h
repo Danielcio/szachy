@@ -7,7 +7,6 @@
 
 class Plansza {
 private:
-    std::vector<Figura*> zbiteFigury;
     void zaktualizujKrola(Kolor kolor, int x, int y);
     bool zmienPozycje(int staryX, int staryY, int nowyX, int nowyY);
     Figura* mapa[8][8]{};

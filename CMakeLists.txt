@@ -22,6 +22,8 @@ add_executable(Szachy main.cpp
         Krol.h
         Kolor.h
         Kolor.cpp
+        WynikRuchu.cpp
+        WynikRuchu.h
 )
 
 set(BOOST_ROOT "C:/Boost")

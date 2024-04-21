@@ -8,6 +8,7 @@
 #include "Wieza.h"
 #include <iostream>
 #include <typeinfo>
+#include "WynikRuchu.h"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ void Plansza::wygenerujMape() {
     mapa [7][7] = new Wieza (Czarny);
 }
 
-bool Plansza::przesunFigure(int staryX, int staryY, int nowyX, int nowyY) {
+WynikRuchu Plansza::przesunFigure(int staryX, int staryY, int nowyX, int nowyY) {
     // 1. Czy figura znajduje sie na wskazanych wspolrzednych
     // 2. Czy figura moze przesunac sie na nowe wspolrzedne
     // 2.1 jesli bicie ->  imapa[staryY][staryX].czyBicieDozwolone(staryX, staryY, nowyY, nowyX),
@@ -58,34 +59,50 @@ bool Plansza::przesunFigure(int staryX, int staryY, int nowyX, int nowyY) {
     //      return false
 
     if (staryX > 7 || staryX < 0 || staryY > 7 || staryY < 0 || nowyX > 7 || nowyX < 0 || nowyY > 7 || nowyY < 0) {
-        return false;
+        return Porazka;
     }
 
     if(mapa[staryX][staryY] == nullptr) {
-        return false;
+        return Porazka;
     }
-if(poprzednikolor==mapa[staryX][staryY]->kolor){
-    return false;
+    if(poprzednikolor==mapa[staryX][staryY]->kolor){
+        return Porazka;
+    }
+
+    if(mapa[nowyX][nowyY] == nullptr && !mapa[staryX][staryY] -> sprawdzRuch(staryX, staryY, nowyX, nowyY, mapa)) {
+        return Porazka;
+    }
+    else if(mapa[nowyX][nowyY]!= nullptr) {
+        if(mapa[staryX][staryY]->kolor == mapa[nowyX][nowyY] -> kolor || !mapa[staryX][staryY] -> sprawdzBicie(staryX, staryY, nowyX, nowyY, mapa))
+            return Porazka;
+    }
+
+    poprzednikolor= przeciwnyKolor(poprzednikolor);
+    return zmienPozycje(staryX, staryY, nowyX, nowyY);
 }
 
-
-    if(mapa[nowyX][nowyY] == nullptr && mapa[staryX][staryY] -> sprawdzRuch(staryX, staryY, nowyX, nowyY, mapa)) {
-        if(!zmienPozycje(staryX, staryY, nowyX, nowyY))
+bool Plansza::czyMomentZamiany(int x, int y) {
+    // Czy pionek znajduje w ostatnim rzedzie
+    if (mapa[x][y]->kolor == Bialy) {
+        if (x != 7) {
             return false;
-
-    }
-    else if(mapa[nowyX][nowyY]!= nullptr && mapa[staryX][staryY] -> kolor != mapa[nowyX][nowyY] -> kolor && mapa[staryX][staryY] -> sprawdzBicie(staryX, staryY, nowyX, nowyY, mapa)) {
-        if(!zmienPozycje(staryX, staryY, nowyX, nowyY))
+        }
+    } else {
+        if (x != 0) {
             return false;
-
-        zbiteFigury.push_back(mapa[nowyX][nowyY]);
-
+        }
     }
-poprzednikolor= przeciwnyKolor(poprzednikolor);
+
+    // Czy figura to pionek
+    const std::type_info& type = typeid(*mapa[x][y]);
+    if (type != typeid(Pionek)) {
+        return false;
+    }
+
     return true;
 }
 
-bool Plansza::zmienPozycje(int staryX, int staryY, int nowyX, int nowyY) {
+WynikRuchu Plansza::zmienPozycje(int staryX, int staryY, int nowyX, int nowyY) {
     Figura* figura = mapa[nowyX][nowyY];
     mapa[nowyX][nowyY] = mapa[staryX][staryY];
     mapa[staryX][staryY] = nullptr;
@@ -100,13 +117,45 @@ bool Plansza::zmienPozycje(int staryX, int staryY, int nowyX, int nowyY) {
         if (type == typeid(Krol))
             zaktualizujKrola(mapa[staryX][staryY]-> kolor, staryX, staryY);
 
+        return Szach;
+    }
+
+    if(figura != nullptr) {
+        if(figura->kolor == Bialy) {
+            zbiteBialeFigury.push_back(figura);
+        }
+        else {
+            zbiteCzarneFigury.push_back(figura);
+        }
+        return Bicie;
+    }
+    // Jesli figura jest krolem, to sprawdz jej kolor i zaktualizuj odpowiednia parę współrzędnych
+
+    return BrakBicia;
+}
+
+bool Plansza::zamienFigure(int x, int y, Kolor kolor, int nrFigury) {
+    if(!czyMomentZamiany(x, y)) {
         return false;
     }
 
-    // Jesli figura jest krolem, to sprawdz jej kolor i zaktualizuj odpowiednia parę współrzędnych
+    Figura* bufor = mapa[x][y];
+    if (kolor == Bialy) {
+        if(nrFigury > zbiteBialeFigury.size() - 1) {
+            return false;
+        }
+        mapa[x][y] = zbiteBialeFigury[nrFigury];
+        zbiteBialeFigury[nrFigury] = bufor;
+        return true;
+    }
 
+    if(nrFigury > zbiteCzarneFigury.size() - 1) {
+        return false;
+    }
+    mapa[x][y] = zbiteCzarneFigury[nrFigury];
+    zbiteCzarneFigury[nrFigury] = bufor;
     return true;
-}
+};
 
 void Plansza::zaktualizujKrola(Kolor kolor, int x, int y) {
     if(kolor == Bialy) {
@@ -152,4 +201,8 @@ Plansza::Plansza(Figura* mapa[8][8]) {
             this->mapa[x][y] = mapa[x][y];
         }
     }
+}
+
+Kolor Plansza::czyjaTura() {
+    return przeciwnyKolor(poprzednikolor);
 }

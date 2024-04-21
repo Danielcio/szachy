@@ -28,7 +28,7 @@ bool Pionek::sprawdzBicie(int staryX, int staryY, int nowyX, int nowyY,Figura* m
         if(nowyY == staryY + 1 && kolor == Bialy) {
             return true;
         }
-        else if ((nowyX == staryX-1 || nowyX == staryX + 1) && nowyY == staryY-1 && kolor == Czarny ){
+        else if (nowyY == staryY-1 && kolor == Czarny ){
             return true;
         }
     }
